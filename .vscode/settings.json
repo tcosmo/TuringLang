@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "/home/cosmo/Documents/projects/alang/venv/bin/python3.9",
+    "python.pythonPath": "./venv/bin/python3.9",
     "python.formatting.provider": "autopep8",
     "python.linting.flake8Enabled": true,
     "python.linting.enabled": true

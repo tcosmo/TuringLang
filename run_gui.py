@@ -1,0 +1,3 @@
+import alangui
+
+alangui.run()
