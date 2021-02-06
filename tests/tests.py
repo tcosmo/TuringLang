@@ -43,3 +43,52 @@ class TestSampleTuringMachines(unittest.TestCase):
                     break
 
         self.assertEqual(nb_success, len(tests))
+
+    def test_parity(self):
+        parity_machine = alang.TuringMachine.from_file(
+            "examples/parity.tm")
+
+        tests = [(["0", "1", "0", "0", "1"], "0"),
+                 (["1", "0", "0", "1", "1"], "1"),
+                 (["1", "0", "1", "1", "1"], "0")]
+
+        for test in tests:
+            parity_machine.reset()
+            parity_machine.init_tape(
+                'input', test[0])
+            for i in range(30):
+                try:
+                    parity_machine.step()
+
+                except alang.TMHalt as e:
+                    self.assertEqual(
+                        e.halting_instruction, "halt")
+                    self.assertEqual(
+                        parity_machine.tapes["output"].tape[0], test[1])
+                    break
+
+    def test_parity_adder(self):
+        adder_machine = alang.TuringMachine.from_file(
+            "examples/binary_adder.tm")
+
+        tests = [(["1"], ["1"], ["0", "1"]),
+                 (["1"], ["0"], ["1"]),
+                 (["0", "1"], ["0", "1"], ["0", "0", "1"])]
+
+        for test in tests:
+            adder_machine.reset()
+            adder_machine.init_tape(
+                'input_1', test[0])
+            adder_machine.init_tape(
+                'input_2', test[1])
+            for i in range(30):
+                try:
+                    adder_machine.step()
+
+                except alang.TMHalt as e:
+                    self.assertEqual(
+                        e.halting_instruction, "halt")
+                    for i, s in enumerate(test[2]):
+                        self.assertEqual(
+                            adder_machine.tapes["output"].tape[i], s)
+                    break

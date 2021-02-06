@@ -19,8 +19,8 @@ machine:
     - instruction:
         name: "add_with_no_carry"
         switch:
-          - read:
-              - case:
+          - case:
+              - read:
                   - { tape: "input_1", value: "0" }
                   - { tape: "input_2", value: "0" }
 
@@ -33,11 +33,11 @@ machine:
                 - { tape: "output", direction: right }
               goto: "add_with_no_carry"
 
-          - read:
-              - case:
+          - case:
+              - read:
                   - { tape: "input_1", value: "0" }
                   - { tape: "input_2", value: "1" }
-              - case:
+              - read:
                   - { tape: "input_1", value: "1" }
                   - { tape: "input_2", value: "0" }
 
@@ -50,8 +50,8 @@ machine:
                 - { tape: "output", direction: right }
               goto: "add_with_no_carry"
 
-          - read:
-              - case:
+          - case:
+              - read:
                   - { tape: "input_1", value: "1" }
                   - { tape: "input_2", value: "1" }
 
@@ -64,8 +64,8 @@ machine:
                 - { tape: "output", direction: right }
               goto: "add_with_carry"
 
-          - read:
-              - case:
+          - case:
+              - read:
                   - { tape: "input_1", value: blank }
 
             then:
@@ -76,8 +76,8 @@ machine:
     - instruction:
         name: "add_with_carry"
         switch:
-          - read:
-              - case:
+          - case:
+              - read:
                   - { tape: "input_1", value: "0" }
                   - { tape: "input_2", value: "0" }
 
@@ -90,11 +90,11 @@ machine:
                 - { tape: "output", direction: right }
               goto: "add_with_no_carry"
 
-          - read:
-              - case:
+          - case:
+              - read:
                   - { tape: "input_1", value: "0" }
                   - { tape: "input_2", value: "1" }
-              - case:
+              - read:
                   - { tape: "input_1", value: "1" }
                   - { tape: "input_2", value: "0" }
 
@@ -107,8 +107,8 @@ machine:
                 - { tape: "output", direction: right }
               goto: "add_with_carry"
 
-          - read:
-              - case:
+          - case:
+              - read:
                   - { tape: "input_1", value: "1" }
                   - { tape: "input_2", value: "1" }
 
@@ -121,8 +121,8 @@ machine:
                 - { tape: "output", direction: right }
               goto: "add_with_carry"
 
-          - read:
-              - case:
+          - case:
+              - read:
                   - { tape: "input_1", value: blank }
 
             then:

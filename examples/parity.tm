@@ -14,8 +14,8 @@ machine:
     - instruction:
         name: "even"
         switch:
-          - read:
-              - case:
+          - case:
+              - read:
                   - { tape: "input", value: "0" }
 
             then:
@@ -24,8 +24,8 @@ machine:
                 - { tape: "input", direction: right }
               goto: "even"
 
-          - read:
-              - case:
+          - case:
+              - read:
                   - { tape: "input", value: "1" }
 
             then:
@@ -34,8 +34,8 @@ machine:
                 - { tape: "input", direction: right }
               goto: "odd"
 
-          - read:
-              - case:
+          - case:
+              - read:
                   - { tape: "input", value: blank }
 
             then:
@@ -47,8 +47,8 @@ machine:
     - instruction:
         name: "odd"
         switch:
-          - read:
-              - case:
+          - case:
+              - read:
                   - { tape: "input", value: "0" }
 
             then:
@@ -57,8 +57,8 @@ machine:
                 - { tape: "input", direction: right }
               goto: "odd"
 
-          - read:
-              - case:
+          - case:
+              - read:
                   - { tape: "input", value: "1" }
 
             then:
@@ -67,8 +67,8 @@ machine:
                 - { tape: "input", direction: right }
               goto: "even"
 
-          - read:
-              - case:
+          - case:
+              - read:
                   - { tape: "input", value: blank }
 
             then:
@@ -76,3 +76,6 @@ machine:
                 - { tape: "output", value: "1" }
               move:
               goto: "halt"
+
+    - instruction:
+        name: "halt"
