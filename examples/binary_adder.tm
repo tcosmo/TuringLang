@@ -5,118 +5,131 @@ machine:
   name: binary_adder
 
   tapes:
-    input_1:
-      alphabet: ["0", "1"]
-    input_2:
-      alphabet: ["0", "1"]
-    output:
-      alphabet: ["0", "1"]
+    - tape:
+        name: "input_1"
+        alphabet: ["0", "1"]
+    - tape:
+        name: "input_2"
+        alphabet: ["0", "1"]
+    - tape:
+        name: "output"
+        alphabet: ["0", "1"]
 
   instructions:
-    add_with_no_carry:
-      - initial: true
-      - ifread:
-          input_1: "0"
-          input_2: "0"
+    - instruction:
+        name: "add_with_no_carry"
+        switch:
+          - read:
+              - case:
+                  - { tape: "input_1", value: "0" }
+                  - { tape: "input_2", value: "0" }
 
-        then:
-          write:
-            output: "0"
-          move:
-            input_1: right
-            input_2: right
-            output: right
-          goto: add_with_no_carry
+            then:
+              write:
+                - { tape: "output", value: "0" }
+              move:
+                - { tape: "input_1", direction: right }
+                - { tape: "input_2", direction: right }
+                - { tape: "output", direction: right }
+              goto: "add_with_no_carry"
 
-      - ifread:
-          - input_1: "1"
-            input_2: "0"
+          - read:
+              - case:
+                  - { tape: "input_1", value: "0" }
+                  - { tape: "input_2", value: "1" }
+              - case:
+                  - { tape: "input_1", value: "1" }
+                  - { tape: "input_2", value: "0" }
 
-          - input_1: "0"
-            input_2: "1"
+            then:
+              write:
+                - { tape: "output", value: "1" }
+              move:
+                - { tape: "input_1", direction: right }
+                - { tape: "input_2", direction: right }
+                - { tape: "output", direction: right }
+              goto: "add_with_no_carry"
 
-        then:
-          write:
-            output: "1"
-          move:
-            input_1: right
-            input_2: right
-            output: right
-          goto: add_with_no_carry
+          - read:
+              - case:
+                  - { tape: "input_1", value: "1" }
+                  - { tape: "input_2", value: "1" }
 
-      - ifread:
-          input_1: "1"
-          input_2: "1"
+            then:
+              write:
+                - { tape: "output", value: "0" }
+              move:
+                - { tape: "input_1", direction: right }
+                - { tape: "input_2", direction: right }
+                - { tape: "output", direction: right }
+              goto: "add_with_carry"
 
-        then:
-          write:
-            output: "0"
-          move:
-            input_1: right
-            input_2: right
-            output: right
-          goto: add_with_carry
+          - read:
+              - case:
+                  - { tape: "input_1", value: blank }
 
-      - ifread:
-          - input_1: blank
-          - input_2: blank
+            then:
+              write:
+              move:
+              goto: "halt"
 
-        then:
-          write:
-          move:
-          goto: halt
-          
-    add_with_carry:
-      - ifread:
-          input_1: "0"
-          input_2: "0"
+    - instruction:
+        name: "add_with_carry"
+        switch:
+          - read:
+              - case:
+                  - { tape: "input_1", value: "0" }
+                  - { tape: "input_2", value: "0" }
 
-        then:
-          write:
-            output: "1"
-          move:
-            input_1: right
-            input_2: right
-            output: right
-          goto: add_with_no_carry
+            then:
+              write:
+                - { tape: "output", value: "1" }
+              move:
+                - { tape: "input_1", direction: right }
+                - { tape: "input_2", direction: right }
+                - { tape: "output", direction: right }
+              goto: "add_with_no_carry"
 
-      - ifread:
-          - input_1: "0"
-            input_2: "1"
+          - read:
+              - case:
+                  - { tape: "input_1", value: "0" }
+                  - { tape: "input_2", value: "1" }
+              - case:
+                  - { tape: "input_1", value: "1" }
+                  - { tape: "input_2", value: "0" }
 
-          - input_1: "1"
-            input_2: "0"
+            then:
+              write:
+                - { tape: "output", value: "0" }
+              move:
+                - { tape: "input_1", direction: right }
+                - { tape: "input_2", direction: right }
+                - { tape: "output", direction: right }
+              goto: "add_with_carry"
 
-        then:
-          write:
-            output: "0"
-          move:
-            input_1: right
-            input_2: right
-            output: right
-          goto: add_with_carry
+          - read:
+              - case:
+                  - { tape: "input_1", value: "1" }
+                  - { tape: "input_2", value: "1" }
 
-      - ifread:
-          input_1: "1"
-          input_2: "1"
+            then:
+              write:
+                - { tape: "output", value: "1" }
+              move:
+                - { tape: "input_1", direction: right }
+                - { tape: "input_2", direction: right }
+                - { tape: "output", direction: right }
+              goto: "add_with_carry"
 
-        then:
-          write:
-            output: "1"
-          move:
-            input_1: right
-            input_2: right
-            output: right
-          goto: add_with_carry
+          - read:
+              - case:
+                  - { tape: "input_1", value: blank }
 
-      - ifread:
-          - input_1: blank
-          - input_2: blank
+            then:
+              write:
+                - { tape: "output", value: "1" }
+              move:
+              goto: "halt"
 
-        then:
-          write:
-            output: "1"
-          move:
-          goto: halt
-
-    halt:
+    - instruction:
+        name: "halt"

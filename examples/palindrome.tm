@@ -1,57 +1,146 @@
-// This machine computes the parity of the number of 1s in a binary input
-machine palindrome:
+# This machine computes the parity of the number of 1s in a binary input
+machine:
+  name: "palindrome"
+
   tapes:
-    tape input:
-      alphabet: 0, 1
-    tape working:
-      alphabet: 0, 1
+    - tape:
+        name: "input"
+        alphabet: ["0", "1"]
+    - tape:
+        name: "working"
+        alphabet: ["0", "1"]
 
-  initial instruction go_at_end_of_input:
-    ifread 0, _:
-    ifread 1, _:
-      move input right
-      goto go_at_end_of_input
-    
-    ifread blank, _:
-      move input left
-      goto go_at_end_of_input
+  instructions:
+    - instruction:
+        name: "go_at_end_of_input"
+        switch:
+          - case:
+              - read:
+                  - { tape: "input", value: "0" }
+              - read:
+                  - { tape: "input", value: "1" }
 
-  instruction write_working_reverse:
-    ifread 0, _:
-    ifread 1, _:
-      write working 0
-      move input left
-      move working right
-      goto write_working_reverse
-    
-    ifread blank, _:
-      move input right
-      move working left
-      goto rewind_working
+            then:
+              write:
+              move:
+                - { tape: "input", direction: right }
+              goto: "go_at_end_of_input"
 
-  instruction rewind_working:
-    ifread _, 0:
-    ifread _, 1:
-      move working left
-      goto rewind_working
-    
-    ifread blank, _:
-      move working right
-      goto compare_tapes
+          - case:
+              - read:
+                  - { tape: "input", value: blank }
 
-  instruction compare_tapes:
-    ifread 0, 0:
-    ifread 1, 1:
-      move input right
-      move working right
-      goto compare_tapes
-    
-    ifread 0, 1:
-    ifread 1, 0:
-      goto not_palindrome
+            then:
+              write:
+              move:
+                - { tape: "input", direction: left }
+              goto: "copy_reversed_input"
 
-    ifread blank, blank:
-      goto palindrome
+    - instruction:
+        name: "copy_reversed_input"
+        switch:
+          - case:
+              - read:
+                  - { tape: "input", value: "0" }
 
-  instruction not_palindrome:
-  instruction palindrome:
+            then:
+              write:
+                - { tape: "working", value: "0" }
+              move:
+                - { tape: "input", direction: left }
+                - { tape: "working", direction: right }
+              goto: "copy_reversed_input"
+
+          - case:
+              - read:
+                  - { tape: "input", value: "1" }
+
+            then:
+              write:
+                - { tape: "working", value: "1" }
+              move:
+                - { tape: "input", direction: left }
+                - { tape: "working", direction: right }
+              goto: "copy_reversed_input"
+
+          - case:
+              - read:
+                  - { tape: "input", value: blank }
+
+            then:
+              write:
+              move:
+                - { tape: "input", direction: right }
+                - { tape: "working", direction: left }
+              goto: "rewind_working_tape"
+
+    - instruction:
+        name: "rewind_working_tape"
+        switch:
+          - case:
+              - read:
+                  - { tape: "working", value: "0" }
+              - read:
+                  - { tape: "working", value: "1" }
+
+            then:
+              write:
+              move:
+                - { tape: "working", direction: left }
+              goto: "rewind_working_tape"
+
+          - case:
+              - read:
+                  - { tape: "working", value: blank }
+
+            then:
+              write:
+              move:
+                - { tape: "working", direction: right }
+              goto: "compare_tapes"
+
+    - instruction:
+        name: "compare_tapes"
+        switch:
+          - case:
+              - read:
+                  - { tape: "input", value: "0" }
+                  - { tape: "working", value: "0" }
+              - read:
+                  - { tape: "input", value: "1" }
+                  - { tape: "working", value: "1" }
+
+            then:
+              write:
+              move:
+                - { tape: "input", direction: right }
+                - { tape: "working", direction: right }
+              goto: "compare_tapes"
+
+          - case:
+              - read:
+                  - { tape: "input", value: "0" }
+                  - { tape: "working", value: "1" }
+              - read:
+                  - { tape: "input", value: "1" }
+                  - { tape: "working", value: "0" }
+
+            then:
+              write:
+              move:
+              goto: "not_palindrome"
+
+          - case:
+              - read:
+                  - { tape: "input", value: blank }
+
+            then:
+              write:
+              move:
+              goto: "palindrome"
+
+    - instruction:
+        name: "not_palindrome"
+
+    - instruction:
+        name: "palindrome"

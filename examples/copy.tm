@@ -1,73 +1,51 @@
 # This machine copies the content of its input tape on its output tape
-machine copy:
+machine:
+  name: "copy"
+
   tapes:
-    input:
-      alphabet: ["0", "1"]
-    output:
-      alphabet: ["0", "1"]
+    - tape:
+        name: "input"
+        alphabet: ["0", "1"]
+    - tape:
+        name: "output"
+        alphabet: ["0", "1"]
 
   instructions:
-    go_to_end_of_input:
-      - initial: true
-      - ifread:
-          input: "0"
+    - instruction:
+        name: "copy_input"
+        switch:
+          - case:
+              - read:
+                  - { tape: "input", value: "0" }
 
-        then:
-          write:
-          move:
-            input: right
-            output: right
-          goto: go_to_end_of_input
+            then:
+              write:
+                - { tape: "output", value: "0" }
+              move:
+                - { tape: "input", direction: right }
+                - { tape: "output", direction: right }
+              goto: "copy_input"
 
-      - ifread:
-          input: "1"
+          - case:
+              - read:
+                  - { tape: "input", value: "1" }
 
-        then:
-          write:
-          move:
-            input: right
-            output: right
-          goto: go_to_end_of_input
+            then:
+              write:
+                - { tape: "output", value: "1" }
+              move:
+                - { tape: "input", direction: right }
+                - { tape: "output", direction: right }
+              goto: "copy_input"
 
-      - ifread:
-          input: blank
+          - case:
+              - read:
+                  - { tape: "input", value: blank }
 
-        then:
-          write:
-          move:
-            input: left
-            output: left
-          goto: copy_input_from_the_end
+            then:
+              write:
+              move:
+              goto: "halt"
 
-    copy_input_from_the_end:
-      - ifread:
-          input: "0"
-
-        then:
-          write:
-            output: "0"
-          move:
-            input: left
-            output: left
-          goto: copy_input_from_the_end
-
-      - ifread:
-          input: "1"
-
-        then:
-          write:
-            output: "1"
-          move:
-            input: left
-            output: left
-          goto: copy_input_from_the_end
-
-      - ifread:
-          input: blank
-
-        then:
-          write:
-          move:
-          goto: halt
-          
-    halt:
+    - instruction:
+        name: "halt"
