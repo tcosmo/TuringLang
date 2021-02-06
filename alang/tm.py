@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, Dict, List
 import yaml
 from enum import Enum
 import alang.keywords as kw
@@ -34,8 +34,8 @@ BLANK_SYMBOL = None
 class Tape:
     def __init__(self):
         self.name: str = ""
-        self.alphabet: list[str] = []
-        self.tape: dict[int, str] = {}
+        self.alphabet: List[str] = []
+        self.tape: Dict[int, str] = {}
         self.head_position: int = 0
         self.tape[self.head_position] = BLANK_SYMBOL
 
@@ -73,7 +73,7 @@ class Tape:
             raise TMSpecificationError(f"Symbol `{symb}` is not part "
                                        f"of tape `{self.name}`'s alphabet")
 
-    def init_tape(self, configuration: list[str]):
+    def init_tape(self, configuration: List[str]):
         self.head_position = 0
         for i, symb in enumerate(configuration):
             self.check_valid_symbol(symb)
@@ -141,7 +141,7 @@ class TapeAndDirection:
 
 class ReadCase:
     def __init__(self):
-        self.read_instructions: list[TapeAndValue] = []
+        self.read_instructions: List[TapeAndValue] = []
 
     def match(self, tapes) -> bool:
         for read_instr in self.read_instructions:
@@ -172,9 +172,9 @@ class ReadCase:
 
 class SwitchCase:
     def __init__(self):
-        self.read_cases: list[ReadCase] = []
-        self.write_instructions: list[TapeAndValue] = []
-        self.move_instructions: list[TapeAndDirection] = []
+        self.read_cases: List[ReadCase] = []
+        self.write_instructions: List[TapeAndValue] = []
+        self.move_instructions: List[TapeAndDirection] = []
         self.goto_instruction: Union[str, None] = None
 
     def match(self, tapes) -> bool:
@@ -247,9 +247,9 @@ class SwitchCase:
 class Instruction:
     def __init__(self):
         self.name: str = ""
-        self.switch_cases: list[SwitchCase] = []
+        self.switch_cases: List[SwitchCase] = []
 
-    def run(self, tapes: list[Tape]) -> Union[str, None]:
+    def run(self, tapes: List[Tape]) -> Union[str, None]:
         goto = None
         for switch_case in self.switch_cases:
             if switch_case.match(tapes):
@@ -273,12 +273,12 @@ class Instruction:
 class TuringMachine:
     def __init__(self):
         self.name: str = ""
-        self.tapes: dict[str, Tape] = {}
-        self.instructions: list[Instruction] = []
+        self.tapes: Dict[str, Tape] = {}
+        self.instructions: List[Instruction] = []
         self.instruction_pointer: int = 0
-        self.reverse_instruction_table: dict[str, int] = {}
+        self.reverse_instruction_table: Dict[str, int] = {}
 
-    def init_tape(self, tape_name: str, configuration: list[str]):
+    def init_tape(self, tape_name: str, configuration: List[str]):
         if tape_name not in self.tapes:
             raise TMSpecificationError(f"Tape `{tape_name}` does not exist.")
         self.tapes[tape_name].init_tape(configuration)
