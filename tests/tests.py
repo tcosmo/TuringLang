@@ -4,7 +4,7 @@ import alang
 
 class TestSampleTuringMachines(unittest.TestCase):
     def test_copy(self):
-        copy_machine = alang.TuringMachine.from_file("examples/copy.tm")
+        copy_machine = alang.TuringMachine.from_file("examples/copy.yaml")
         copy_machine.init_tape('input', ["0", "1", "0", "0", "1"])
         for i in range(10):
             try:
@@ -20,7 +20,7 @@ class TestSampleTuringMachines(unittest.TestCase):
 
     def test_palindrome(self):
         palindrome_machine = alang.TuringMachine.from_file(
-            "examples/palindrome.tm")
+            "examples/palindrome.yaml")
 
         nb_success = 0
 
@@ -46,7 +46,7 @@ class TestSampleTuringMachines(unittest.TestCase):
 
     def test_parity(self):
         parity_machine = alang.TuringMachine.from_file(
-            "examples/parity.tm")
+            "examples/parity.yaml")
 
         tests = [(["0", "1", "0", "0", "1"], "0"),
                  (["1", "0", "0", "1", "1"], "1"),
@@ -69,7 +69,7 @@ class TestSampleTuringMachines(unittest.TestCase):
 
     def test_parity_adder(self):
         adder_machine = alang.TuringMachine.from_file(
-            "examples/binary_adder.tm")
+            "examples/binary_adder.yaml")
 
         tests = [(["1"], ["1"], ["0", "1"]),
                  (["1"], ["0"], ["1"]),
