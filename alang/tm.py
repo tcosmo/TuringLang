@@ -9,18 +9,17 @@ class TMSpecificationError(Exception):
 
 
 class TMHalt(Exception):
-    def __init__(self, machine_name,
-                 halting_instruction, halting_instruction_pointer):
+    def __init__(self, machine_name, halting_instruction, halting_instruction_pointer):
         self.machine_name = machine_name
         self.halting_instruction = halting_instruction
         self.halting_instruction_pointer = halting_instruction_pointer
 
         super().__init__(str(self))
+
     pass
 
     def __str__(self):
-        return (f"Machine `{self.machine_name}` has halted in instruction"
-                f" `{self.halting_instruction}`")
+        return f"Machine `{self.machine_name}` has halted in instruction" f" `{self.halting_instruction}`"
 
 
 class Direction(Enum):
@@ -56,7 +55,7 @@ class Tape:
             min_pos = min(min_pos, pos)
             max_pos = max(max_pos, pos)
         to_return = {}
-        for i in range(min_pos, max_pos+1):
+        for i in range(min_pos, max_pos + 1):
             value = kw.KW_BLANK
             if i in self.tape:
                 value = self.tape[i]
@@ -70,8 +69,7 @@ class Tape:
 
     def check_valid_symbol(self, symb):
         if symb not in self.alphabet:
-            raise TMSpecificationError(f"Symbol `{symb}` is not part "
-                                       f"of tape `{self.name}`'s alphabet")
+            raise TMSpecificationError(f"Symbol `{symb}` is not part " f"of tape `{self.name}`'s alphabet")
 
     def init_tape(self, configuration: List[str]):
         self.head_position = 0
@@ -89,11 +87,11 @@ class Tape:
         self.tape[self.head_position] = value
 
     def move(self, direction: Direction):
-        self.head_position += 1 if direction == Direction.RIGHT else \
-            -1
+        self.head_position += 1 if direction == Direction.RIGHT else -1
         if self.head_position not in self.tape:
             self.tape[self.head_position] = BLANK_SYMBOL
 
+    @staticmethod
     def from_yaml_dict(yaml_dict):
         tape = Tape()
         inside_tape = yaml_dict[kw.KW_TAPE]
@@ -107,6 +105,7 @@ class TapeAndValue:
         self.tape_name: str = ""
         self.value: Union[str, None] = BLANK_SYMBOL
 
+    @staticmethod
     def from_yaml_dict(yaml_dict):
         tape_and_value = TapeAndValue()
         tape_and_value.tape_name = str(yaml_dict[kw.KW_TAPE])
@@ -124,6 +123,7 @@ class TapeAndDirection:
         self.tape_name: str = ""
         self.direction: Union[Direction, None] = None
 
+    @staticmethod
     def from_yaml_dict(yaml_dict):
         tape_and_dir = TapeAndDirection()
         tape_and_dir.tape_name = str(yaml_dict[kw.KW_TAPE])
@@ -133,8 +133,7 @@ class TapeAndDirection:
         elif yaml_dict[kw.KW_DIRECTION] == kw.KW_RIGHT:
             tape_and_dir.direction = Direction.RIGHT
         else:
-            raise TMSpecificationError(
-                f"Unknown tape direction `{yaml_dict[kw.KW_DIRECTION]}`")
+            raise TMSpecificationError(f"Unknown tape direction `{yaml_dict[kw.KW_DIRECTION]}`")
 
         return tape_and_dir
 
@@ -147,25 +146,24 @@ class ReadCase:
         for read_instr in self.read_instructions:
             tape_name, value = read_instr.tape_name, read_instr.value
             if tape_name not in tapes:
-                raise TMSpecificationError(f"In read instruction: "
-                                           f"tape `{tape_name}`"
-                                           " does not exists")
+                raise TMSpecificationError(f"In read instruction: " f"tape `{tape_name}`" " does not exists")
 
             if not tapes[tape_name].read_equals(value):
                 return False
         return True
 
+    @staticmethod
     def from_yaml_dict(yaml_dict):
         read_instr = ReadCase()
 
         tape_seen = {}
         for tape_and_value in yaml_dict:
-            read_instr.read_instructions.append(
-                TapeAndValue.from_yaml_dict(tape_and_value))
+            read_instr.read_instructions.append(TapeAndValue.from_yaml_dict(tape_and_value))
             if read_instr.read_instructions[-1].tape_name in tape_seen:
                 raise TMSpecificationError(
                     "Two different read instructions are given for the same"
-                    "tape in the same read case, that's illegal!")
+                    "tape in the same read case, that's illegal!"
+                )
 
         return read_instr
 
@@ -188,59 +186,53 @@ class SwitchCase:
             tape_name = write_instruction.tape_name
             value = write_instruction.value
             if tape_name not in tapes:
-                raise TMSpecificationError(f"In write instruction: "
-                                           f"tape `{tape_name}`"
-                                           " does not exists")
+                raise TMSpecificationError(f"In write instruction: " f"tape `{tape_name}`" " does not exists")
             tapes[tape_name].write(value)
 
         for move_instruction in self.move_instructions:
-            tape_name, direction = move_instruction.tape_name,\
-                move_instruction.direction
+            tape_name, direction = move_instruction.tape_name, move_instruction.direction
             if tape_name not in tapes:
-                raise TMSpecificationError(f"In move instruction: "
-                                           f"tape `{tape_name}`"
-                                           " does not exists")
+                raise TMSpecificationError(f"In move instruction: " f"tape `{tape_name}`" " does not exists")
             tapes[tape_name].move(direction)
 
         return self.goto_instruction
 
+    @staticmethod
     def from_yaml_dict(yaml_dict):
         switch = SwitchCase()
         yaml_dict_inside = yaml_dict[kw.KW_CASE]
         for read_case in yaml_dict_inside:
-            switch.read_cases.append(
-                ReadCase.from_yaml_dict(read_case[kw.KW_READ]))
+            switch.read_cases.append(ReadCase.from_yaml_dict(read_case[kw.KW_READ]))
 
         then_dict = yaml_dict[kw.KW_THEN]
 
         if then_dict[kw.KW_WRITE]:
             tape_seen = {}
             for write_instruction in then_dict[kw.KW_WRITE]:
-                switch.write_instructions.append(
-                    TapeAndValue.from_yaml_dict(write_instruction))
+                switch.write_instructions.append(TapeAndValue.from_yaml_dict(write_instruction))
 
                 if switch.write_instructions[-1].tape_name in tape_seen:
                     raise TMSpecificationError(
                         "Two different write instructions are given for the "
-                        "same tape in the same switch case, that's illegal!")
+                        "same tape in the same switch case, that's illegal!"
+                    )
 
                 tape_seen[switch.write_instructions[-1].tape_name] = True
 
         if then_dict[kw.KW_MOVE]:
             tape_seen = {}
             for move_instruction in then_dict[kw.KW_MOVE]:
-                switch.move_instructions.append(
-                    TapeAndDirection.from_yaml_dict(move_instruction))
+                switch.move_instructions.append(TapeAndDirection.from_yaml_dict(move_instruction))
 
                 if switch.move_instructions[-1].tape_name in tape_seen:
                     raise TMSpecificationError(
                         "Two different move instructions are given for the "
-                        "same tape in the same switch case, that's illegal!")
+                        "same tape in the same switch case, that's illegal!"
+                    )
 
                 tape_seen[switch.move_instructions[-1].tape_name] = True
 
-        switch.goto_instruction = str(
-            then_dict[kw.KW_GOTO]) if then_dict[kw.KW_GOTO] else None
+        switch.goto_instruction = str(then_dict[kw.KW_GOTO]) if then_dict[kw.KW_GOTO] else None
         return switch
 
 
@@ -257,6 +249,7 @@ class Instruction:
                 break
         return goto
 
+    @staticmethod
     def from_yaml_dict(yaml_dict):
         instr = Instruction()
         inside_dict = yaml_dict[kw.KW_INSTRUCTION]
@@ -264,8 +257,7 @@ class Instruction:
 
         if kw.KW_SWITCH in inside_dict:
             for switch_case in inside_dict[kw.KW_SWITCH]:
-                instr.switch_cases.append(
-                    SwitchCase.from_yaml_dict(switch_case))
+                instr.switch_cases.append(SwitchCase.from_yaml_dict(switch_case))
 
         return instr
 
@@ -292,14 +284,16 @@ class TuringMachine:
 
     def get_configuration_dict(self):
         instr_name = self.instructions[self.instruction_pointer].name
-        to_return = {'configuration': {'machine': self.name,
-                                       'current_instruction': instr_name,
-                                       'instruction_pointer':
-                                       self.instruction_pointer},
-                     'tapes': {}}
+        to_return = {
+            "configuration": {
+                "machine": self.name,
+                "current_instruction": instr_name,
+                "instruction_pointer": self.instruction_pointer,
+            },
+            "tapes": {},
+        }
         for tape_name in self.tapes:
-            to_return['tapes'][tape_name] = self.tapes[tape_name]\
-                .get_configuration_dict()
+            to_return["tapes"][tape_name] = self.tapes[tape_name].get_configuration_dict()
         return to_return
 
     def __str__(self) -> str:
@@ -314,12 +308,14 @@ class TuringMachine:
 
         self.instruction_pointer = self.reverse_instruction_table[goto]
 
+    @staticmethod
     def from_file(file_path):
         with open(file_path) as f:
             machine_spec = yaml.load(f, Loader=yaml.FullLoader)
 
         return TuringMachine.from_yaml_dict(machine_spec)
 
+    @staticmethod
     def from_yaml_dict(yaml_dict):
         tm = TuringMachine()
 
@@ -333,19 +329,16 @@ class TuringMachine:
             tm.tapes[the_tape.name] = the_tape
             tm.tape_order.append(the_tape.name)
             if the_tape.name in unique_tape_name:
-                raise TMSpecificationError(
-                    f"Two tapes have the same name `{the_tape.name}`,"
-                    "that's illegal!")
+                raise TMSpecificationError(f"Two tapes have the same name `{the_tape.name}`," "that's illegal!")
             unique_tape_name[the_tape.name] = True
 
         unique_instruction_name = {None: True}
         for instruction_dict in machine_dict_inside[kw.KW_INSTRUCTIONS]:
-            tm.instructions.append(
-                Instruction.from_yaml_dict(instruction_dict))
+            tm.instructions.append(Instruction.from_yaml_dict(instruction_dict))
             if tm.instructions[-1].name in unique_instruction_name:
                 raise TMSpecificationError(
-                    "Two instructions have the same name "
-                    f"`{tm.instructions[-1].name}`, that's illegal!")
+                    "Two instructions have the same name " f"`{tm.instructions[-1].name}`, that's illegal!"
+                )
             unique_instruction_name[tm.instructions[-1].name] = True
 
         for i, instruction in enumerate(tm.instructions):
@@ -354,7 +347,8 @@ class TuringMachine:
                     raise TMSpecificationError(
                         f"Instruction `{instruction.name}` has a goto "
                         f"`{switch_case.goto_instruction}` referring to an "
-                        "inexistent instruction")
+                        "inexistent instruction"
+                    )
             tm.reverse_instruction_table[instruction.name] = i
 
         return tm
