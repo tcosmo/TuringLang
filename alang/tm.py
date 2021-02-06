@@ -274,6 +274,8 @@ class TuringMachine:
     def __init__(self):
         self.name: str = ""
         self.tapes: Dict[str, Tape] = {}
+        # Useful to remember specified tape order for input purposes
+        self.tape_order: List[str] = []
         self.instructions: List[Instruction] = []
         self.instruction_pointer: int = 0
         self.reverse_instruction_table: Dict[str, int] = {}
@@ -326,9 +328,10 @@ class TuringMachine:
         tm.name = str(machine_dict_inside[kw.KW_NAME])
 
         unique_tape_name = {}
-        for tape_dict in machine_dict_inside[kw.KW_TAPES]:
+        for i, tape_dict in enumerate(machine_dict_inside[kw.KW_TAPES]):
             the_tape = Tape.from_yaml_dict(tape_dict)
             tm.tapes[the_tape.name] = the_tape
+            tm.tape_order.append(the_tape.name)
             if the_tape.name in unique_tape_name:
                 raise TMSpecificationError(
                     f"Two tapes have the same name `{the_tape.name}`,"

@@ -90,10 +90,10 @@ def draw_tm(screen, tm: alang.TuringMachine):
 
 def input_tapes(tm):
     for tape_name in tm.tapes:
-        print(f"Input for tape `{tape_name}` (comma separated):")
+        print(f"Input for tape `{tape_name}`:")
         in_ = input()
-        tm.init_tape(tape_name, list(map(lambda x: x.strip(), in_.split(','))))
-    print("Ok!")
+        tm.init_tape(tape_name, list(in_))
+    print("System ready!")
 
 
 def run():
@@ -103,7 +103,11 @@ def run():
               "Try `python run_gui example_machines/parity.tm`.")
 
     tm = alang.TuringMachine.from_file(sys.argv[1])
-    tm.init_tape('input', ["0", "1", "1", "0", "1"])
+
+    if len(sys.argv) > 2:
+        for i in range(2, len(sys.argv)):
+            tm.tapes[tm.tape_order[i-2]].init_tape(list(sys.argv[i]))
+
     pygame.init()
 
     screen = pygame.display.set_mode([1200, 800])
