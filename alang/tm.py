@@ -8,6 +8,10 @@ class TMSpecificationError(Exception):
     pass
 
 
+class TMRuntimeError(Exception):
+    pass
+
+
 class TMHalt(Exception):
     def __init__(self, machine_name, halting_instruction, halting_instruction_pointer):
         self.machine_name = machine_name
@@ -69,7 +73,7 @@ class Tape:
 
     def check_valid_symbol(self, symb):
         if symb not in self.alphabet:
-            raise TMSpecificationError(f"Symbol `{symb}` is not part " f"of tape `{self.name}`'s alphabet")
+            raise TMRuntimeError(f"Symbol `{symb}` is not part " f"of tape `{self.name}`'s alphabet")
 
     def init_tape(self, configuration: List[str]):
         self.head_position = 0
@@ -146,7 +150,7 @@ class ReadCase:
         for read_instr in self.read_instructions:
             tape_name, value = read_instr.tape_name, read_instr.value
             if tape_name not in tapes:
-                raise TMSpecificationError(f"In read instruction: " f"tape `{tape_name}`" " does not exists")
+                raise TMRuntimeError(f"In read instruction: " f"tape `{tape_name}`" " does not exists")
 
             if not tapes[tape_name].read_equals(value):
                 return False
@@ -186,13 +190,13 @@ class SwitchCase:
             tape_name = write_instruction.tape_name
             value = write_instruction.value
             if tape_name not in tapes:
-                raise TMSpecificationError(f"In write instruction: " f"tape `{tape_name}`" " does not exists")
+                raise TMRuntimeError(f"In write instruction: " f"tape `{tape_name}`" " does not exists")
             tapes[tape_name].write(value)
 
         for move_instruction in self.move_instructions:
             tape_name, direction = move_instruction.tape_name, move_instruction.direction
             if tape_name not in tapes:
-                raise TMSpecificationError(f"In move instruction: " f"tape `{tape_name}`" " does not exists")
+                raise TMRuntimeError(f"In move instruction: " f"tape `{tape_name}`" " does not exists")
             tapes[tape_name].move(direction)
 
         return self.goto_instruction
@@ -274,7 +278,7 @@ class TuringMachine:
 
     def init_tape(self, tape_name: str, configuration: List[str]):
         if tape_name not in self.tapes:
-            raise TMSpecificationError(f"Tape `{tape_name}` does not exist.")
+            raise TMRuntimeError(f"Tape `{tape_name}` does not exist.")
         self.tapes[tape_name].init_tape(configuration)
 
     def reset(self):
@@ -329,7 +333,7 @@ class TuringMachine:
             tm.tapes[the_tape.name] = the_tape
             tm.tape_order.append(the_tape.name)
             if the_tape.name in unique_tape_name:
-                raise TMSpecificationError(f"Two tapes have the same name `{the_tape.name}`," "that's illegal!")
+                raise TMSpecificationError(f"Two tapes have the same name `{the_tape.name}`, that's illegal!")
             unique_tape_name[the_tape.name] = True
 
         unique_instruction_name = {None: True}
