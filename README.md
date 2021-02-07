@@ -3,7 +3,7 @@
 <p align="center">
 <img src="https://github.com/tcosmo/alang/blob/master/alang_add.png?raw=true" align="center" width="70%" style="text-align:center" alt="A binary adder written in `alang`"></img>
 <br/>
-<strong>A binary adder written in `alang`</strong>
+<strong>A binary adder (<a href="https://en.wikipedia.org/wiki/Endianness">little-endian</a>) written in `alang`</strong>
 </p>
 
 `alang` allow you to write and simulate Turing machine. It comes with a GUI, `alangui` which allows you to visualise
