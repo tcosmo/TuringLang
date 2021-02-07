@@ -1,6 +1,6 @@
-# `alang`: A Turing Machine specification language and simulator
+# `alang`: Turing machines specification language and simulator
 
-`alang` allow you to write and simulate Turing Machines. It comes with a GUI, `alangui` which allows you to visualise
+`alang` allow you to write and simulate Turing machine. It comes with a GUI, `alangui` which allows you to visualise
 your machines' executions.
 
 Machines are specified in a [YAML](https://en.wikipedia.org/wiki/YAML)-based language, see for instance:
