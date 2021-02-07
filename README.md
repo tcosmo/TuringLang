@@ -1,7 +1,7 @@
 # `alang`: Turing machines specification language and simulator
 
 <p align="center">
-<img src="https://github.com/tcosmo/alang/blob/master/alang_add.png.png?raw=true" align="center" width="70%" style="text-align:center" alt="The Collatz process embeds a base conversion algorithm"></img>
+<img src="https://github.com/tcosmo/alang/blob/master/alang_add.png?raw=true" align="center" width="70%" style="text-align:center" alt="A binary adder written in `alang`"></img>
 <br/>
 <strong>A binary adder written in `alang`</strong>
 </p>
