@@ -36,7 +36,7 @@ COLOR_INSTR_SELECTED = (255, 140, 0)
 MACHINE_TEXT_ORIGIN_X = 50
 SPECIAL_MSG_X = 600
 
-LINE_HEIGHT = 40
+LINE_HEIGHT = 35
 
 tapes_names_rendered = {}
 alphabet_rendered = {}
@@ -119,7 +119,7 @@ def draw_tm(screen, tm: alang.TuringMachine):
 
             machine_text["instructions_name"].append(colored_text)
 
-    pos_machine_text = [MACHINE_TEXT_ORIGIN_X, len(tm.tapes) * (TAPE_SQUARE_SIZE + BETWEEN_TAPE_SPACE)]
+    pos_machine_text = [MACHINE_TEXT_ORIGIN_X, len(tm.tapes) * (TAPE_SQUARE_SIZE + BETWEEN_TAPE_SPACE) - 20]
     screen.blit(
         machine_text["machine"],
         pos_machine_text,

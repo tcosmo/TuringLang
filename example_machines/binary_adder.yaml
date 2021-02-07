@@ -1,6 +1,5 @@
 # This machine computes the sum of two numbers written
-# in binary with LSB to the left, assuming shortest input is padded with 0s
-# on the most significant bit side
+# in binary with LSB to the left
 machine:
   name: binary_adder
 
@@ -16,6 +15,110 @@ machine:
         alphabet: ["0", "1"]
 
   instructions:
+    - instruction:
+        name: "pad_shortest_input"
+        switch:
+          - case:
+              - read:
+                  - { tape: "input_1", value: "0" }
+                  - { tape: "input_2", value: "0" }
+              - read:
+                  - { tape: "input_1", value: "0" }
+                  - { tape: "input_2", value: "1" }
+              - read:
+                  - { tape: "input_1", value: "1" }
+                  - { tape: "input_2", value: "0" }
+              - read:
+                  - { tape: "input_1", value: "1" }
+                  - { tape: "input_2", value: "1" }
+
+            then:
+              write:
+              move:
+                - { tape: "input_1", direction: right }
+                - { tape: "input_2", direction: right }
+              goto: "pad_shortest_input"
+
+          - case:
+              - read:
+                  - { tape: "input_1", value: blank }
+                  - { tape: "input_2", value: "0" }
+              - read:
+                  - { tape: "input_1", value: blank }
+                  - { tape: "input_2", value: "1" }
+
+            then:
+              write:
+                - { tape: "input_1", value: "0" }
+              move:
+                - { tape: "input_1", direction: right }
+                - { tape: "input_2", direction: right }
+              goto: "pad_shortest_input"
+
+          - case:
+              - read:
+                  - { tape: "input_1", value: "0" }
+                  - { tape: "input_2", value: blank }
+              - read:
+                  - { tape: "input_1", value: "1" }
+                  - { tape: "input_2", value: blank }
+
+            then:
+              write:
+                - { tape: "input_2", value: "0" }
+              move:
+                - { tape: "input_1", direction: right }
+                - { tape: "input_2", direction: right }
+              goto: "pad_shortest_input"
+
+          - case:
+              - read:
+                  - { tape: "input_1", value: blank }
+                  - { tape: "input_2", value: blank }
+
+            then:
+              write:
+              move:
+                - { tape: "input_1", direction: left }
+                - { tape: "input_2", direction: left }
+              goto: "rewind_tapes"
+
+    - instruction:
+        name: "rewind_tapes"
+        switch:
+          - case:
+              - read:
+                  - { tape: "input_1", value: "0" }
+                  - { tape: "input_2", value: "0" }
+              - read:
+                  - { tape: "input_1", value: "0" }
+                  - { tape: "input_2", value: "1" }
+              - read:
+                  - { tape: "input_1", value: "1" }
+                  - { tape: "input_2", value: "0" }
+              - read:
+                  - { tape: "input_1", value: "1" }
+                  - { tape: "input_2", value: "1" }
+
+            then:
+              write:
+              move:
+                - { tape: "input_1", direction: left }
+                - { tape: "input_2", direction: left }
+              goto: "rewind_tapes"
+
+          - case:
+              - read:
+                  - { tape: "input_1", value: blank }
+                  - { tape: "input_2", value: blank }
+
+            then:
+              write:
+              move:
+                - { tape: "input_1", direction: right }
+                - { tape: "input_2", direction: right }
+              goto: "add_with_no_carry"
+
     - instruction:
         name: "add_with_no_carry"
         switch:

@@ -1,4 +1,4 @@
-# This machine computes the parity of the number of 1s in a binary input
+# This machine decides whether the input is a palindrome or not
 machine:
   name: "palindrome"
 
