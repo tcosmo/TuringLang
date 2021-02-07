@@ -72,6 +72,8 @@ class Tape:
         return to_return
 
     def check_valid_symbol(self, symb):
+        if symb is None:
+            return
         if symb not in self.alphabet:
             raise TMRuntimeError(f"Symbol `{symb}` is not part " f"of tape `{self.name}`'s alphabet")
 
@@ -86,7 +88,7 @@ class Tape:
             self.check_valid_symbol(value)
         return self.tape[self.head_position] == value
 
-    def write(self, value: str):
+    def write(self, value: Union[str, None]):
         self.check_valid_symbol(value)
         self.tape[self.head_position] = value
 

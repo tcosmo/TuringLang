@@ -1,5 +1,6 @@
 import unittest
 import alang
+import tqdm
 
 
 class TestSampleTuringMachines(unittest.TestCase):
@@ -73,3 +74,23 @@ class TestSampleTuringMachines(unittest.TestCase):
                     for i, s in enumerate(test[2]):
                         self.assertEqual(adder_machine.tapes["output"].tape[i], s)
                     break
+
+
+class TestBusyBeavers(unittest.TestCase):
+    # cf: http://www.logique.jussieu.fr/~michel/ha.html#tm52
+    # cf: https://www.scottaaronson.com/papers/bb.pdf
+    def test_busy_beaver_5_2(self):
+        # Current contender for 5 states 2 symbols
+        busy_beaver = alang.TuringMachine.from_file("example_machines/busy_beaver_contender_5_2.yaml")
+        should_stop_after = 47176870
+
+        has_stopped = False
+        for i in tqdm.tqdm(range(should_stop_after)):
+            try:
+                busy_beaver.step()
+            except alang.TMHalt:
+                has_stopped = True
+                break
+
+        self.assertTrue(has_stopped)
+        self.assertEqual(i + 1, should_stop_after)  # i+1 because tick needed to take the Halting transition

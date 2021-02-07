@@ -1,0 +1,126 @@
+# This machine is the current contender for the busy beaver competition
+# among machines with 5 states (instructions) and 2 symbols
+# The machine halts after 47,176,870 steps
+# cf: http://www.logique.jussieu.fr/~michel/ha.html#tm52
+
+# Machine condensed format:
+# A0 A1 B0 B1 C0 C1 D0 D1 E0 E1 sigma(M) s(M)
+# 1RB 1LC 1RC 1RB 1RD 0LE 1LA 1LD 1RH 0LA 4098 47,176,870
+machine:
+  name: "busy_beaver_contender_5_2"
+
+  tapes:
+    - tape:
+        name: "tape"
+        alphabet: ["1"]
+
+  instructions:
+    - instruction:
+        name: "A"
+        switch:
+          - case:
+              - read:
+                  - { tape: "tape", "value": blank }
+            then:
+              write:
+                - { tape: "tape", "value": "1" }
+              move:
+                - { tape: "tape", direction: right }
+              goto: "B"
+          - case:
+              - read:
+                  - { tape: "tape", "value": "1" }
+            then:
+              write:
+                - { tape: "tape", "value": "1" }
+              move:
+                - { tape: "tape", direction: left }
+              goto: "C"
+
+    - instruction:
+        name: "B"
+        switch:
+          - case:
+              - read:
+                  - { tape: "tape", "value": blank }
+            then:
+              write:
+                - { tape: "tape", "value": "1" }
+              move:
+                - { tape: "tape", direction: right }
+              goto: "C"
+          - case:
+              - read:
+                  - { tape: "tape", "value": "1" }
+            then:
+              write:
+                - { tape: "tape", "value": "1" }
+              move:
+                - { tape: "tape", direction: right }
+              goto: "B"
+
+    - instruction:
+        name: "C"
+        switch:
+          - case:
+              - read:
+                  - { tape: "tape", "value": blank }
+            then:
+              write:
+                - { tape: "tape", "value": "1" }
+              move:
+                - { tape: "tape", direction: right }
+              goto: "D"
+          - case:
+              - read:
+                  - { tape: "tape", "value": "1" }
+            then:
+              write:
+                - { tape: "tape", "value": blank }
+              move:
+                - { tape: "tape", direction: left }
+              goto: "E"
+
+    - instruction:
+        name: "D"
+        switch:
+          - case:
+              - read:
+                  - { tape: "tape", "value": blank }
+            then:
+              write:
+                - { tape: "tape", "value": "1" }
+              move:
+                - { tape: "tape", direction: left }
+              goto: "A"
+          - case:
+              - read:
+                  - { tape: "tape", "value": "1" }
+            then:
+              write:
+                - { tape: "tape", "value": "1" }
+              move:
+                - { tape: "tape", direction: left }
+              goto: "D"
+
+    - instruction:
+        name: "E"
+        switch:
+          - case:
+              - read:
+                  - { tape: "tape", "value": blank }
+            then:
+              write:
+                - { tape: "tape", "value": "1" }
+              move:
+                - { tape: "tape", direction: right }
+              goto:
+          - case:
+              - read:
+                  - { tape: "tape", "value": "1" }
+            then:
+              write:
+                - { tape: "tape", "value": blank }
+              move:
+                - { tape: "tape", direction: left }
+              goto: "A"

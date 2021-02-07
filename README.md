@@ -39,3 +39,23 @@ Then you can for instance run machines in the gui (press `n` to run one machine 
 - `python run_gui.py example_machines/palindrome.yaml 1100011`
 - `python run_gui.py example_machines/binary_adder.yaml 001 001`
 - `python run_gui.py example_machines/binary_adder.yaml 0011111 1011`
+
+## Busy beavers competitions
+
+A busy beaver is a machine with `n` instructions, `m` symbols (including `blank`) and one tape, that will halt on blank input tape. At `n` fixed, the _best_ busy beaver is the busy beaver that halts after the longest time. For values as low as `n=5`, `m=2`, the competition is still running. The current contender for `n=5`, `m=2` stops after `47,176,870` steps. Here's a condensed description of the machine:
+
+```
+A0	A1	B0	B1	C0	C1	D0	D1	E0	E1
+1RB	1LC	1RC	1RB	1RD	0LE	1LA	1LD	1RH	0LA
+```
+
+This busy beaver is implemented in `example_machines/busy_beaver_contender_5_2.yaml`, you can run the machine easer in the gui or in the tests (inside the virtual env, like above):
+
+- `python run_gui.py example_machines/busy_beaver_contender_5_2.yaml` will launch the machine in the simulator for you, you can visualise its smilingly erratic behavior.
+- `python -m unittest tests.tests.TestBusyBeavers` will verify that the machine stops indeed after `47,176,870` steps. **Warning:** this is memory consuming.
+
+More info on busy beavers:
+
+- [https://en.wikipedia.org/wiki/Busy_beaver](Wikipedia)
+- [http://www.logique.jussieu.fr/~michel/ha.html#tm52](http://www.logique.jussieu.fr/~michel/ha.html#tm52)
+- [https://www.scottaaronson.com/papers/bb.pdf](https://www.scottaaronson.com/papers/bb.pdf)
