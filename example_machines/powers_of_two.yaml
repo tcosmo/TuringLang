@@ -1,0 +1,31 @@
+machine:
+  name: "powers"
+
+  tapes:
+    - tape:
+        name: "input"
+        alphabet: ["0", "1"]
+
+  instructions:
+    - instruction:
+        name: "even"
+        switch:
+          - case:
+              - read:
+                  - { tape: "input", value: "0" }
+
+            then:
+              write:
+              move:
+                - { tape: "input", direction: right }
+              goto: "even"
+
+          - case:
+              - read:
+                  - { tape: "input", value: "1" }
+
+            then:
+              write:
+              move:
+                - { tape: "input", direction: right }
+              goto: "even"

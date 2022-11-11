@@ -6,9 +6,6 @@ machine:
     - tape:
         name: "input"
         alphabet: ["0", "1"]
-    - tape:
-        name: "output"
-        alphabet: ["0", "1"]
 
   instructions:
     - instruction:
@@ -34,16 +31,6 @@ machine:
                 - { tape: "input", direction: right }
               goto: "odd"
 
-          - case:
-              - read:
-                  - { tape: "input", value: blank }
-
-            then:
-              write:
-                - { tape: "output", value: "0" }
-              move:
-              goto: "halt"
-
     - instruction:
         name: "odd"
         switch:
@@ -66,16 +53,3 @@ machine:
               move:
                 - { tape: "input", direction: right }
               goto: "even"
-
-          - case:
-              - read:
-                  - { tape: "input", value: blank }
-
-            then:
-              write:
-                - { tape: "output", value: "1" }
-              move:
-              goto: "halt"
-
-    - instruction:
-        name: "halt"

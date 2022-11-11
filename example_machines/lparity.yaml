@@ -1,0 +1,10 @@
+machine:
+  name: "parity"
+
+  tapes:
+    - tape:
+        name: "input"
+        alphabet: ["0", "1"]
+    - tape:
+        name: "output"
+        alphabet: ["0", "1"]

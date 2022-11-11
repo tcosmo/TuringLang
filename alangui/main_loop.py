@@ -12,7 +12,7 @@ BETWEEN_TAPE_SPACE = 90
 BETWEEN_SQUARES_SPACE = 3
 
 COLOR_TAPE_SQUARE = (0, 100, 255)
-COLOR_TAPE_HEAD = (200, 100, 255)
+COLOR_TAPE_HEAD = (230, 100, 255)
 
 CAMERA_POS = [0, 0]
 
@@ -63,7 +63,7 @@ def draw_tm_tape(screen, tape_name: str, tape: alang.Tape, origin=(100, 100)):
     for index in range(min_index, max_index + 1):
         color = COLOR_TAPE_SQUARE if index != tape.head_position else COLOR_TAPE_HEAD
 
-        thick = TAPE_SQUARE_THICK if index != tape.head_position else TAPE_SQUARE_THICK + 1
+        thick = TAPE_SQUARE_THICK if index != tape.head_position else TAPE_SQUARE_THICK + 5
 
         tape_square_rect = [
             origin[0] + index * (TAPE_SQUARE_SIZE + BETWEEN_SQUARES_SPACE) - CAMERA_POS[0],

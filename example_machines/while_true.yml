@@ -1,0 +1,26 @@
+# This machine decides whether the input is a palindrome or not
+machine:
+  name: "palindrome"
+
+  tapes:
+    - tape:
+        name: "input"
+        alphabet: ["0", "1"]
+
+  instructions:
+    - instruction:
+        name: "while_true"
+        switch:
+          - case:
+              - read:
+                  - { tape: "input", value: "0" }
+              - read:
+                  - { tape: "input", value: "1" }
+              - read:
+                  - { tape: "input", value: blank }
+
+            then:
+              write:
+              move:
+                - { tape: "input", direction: right }
+              goto: "while_true"

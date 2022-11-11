@@ -1,0 +1,67 @@
+# This machine computes the parity of the number of 1s in a binary input
+machine:
+  name: "parity"
+
+  tapes:
+    - tape:
+        name: "t"
+        alphabet: ["1"]
+
+  instructions:
+    - instruction:
+        name: "plus_one_init"
+        switch:
+          - case:
+              - read:
+                  - { tape: "t", value: blank }
+
+            then:
+              write:
+              move:
+                - { tape: "t", direction: left }
+              goto: "plus_one"
+    - instruction:
+        name: "plus_one"
+        switch:
+          - case:
+              - read:
+                  - { tape: "t", value: blank }
+
+            then:
+              write:
+                - { tape: "t", value: "1" }
+              move:
+                - { tape: "t", direction: "right" }
+              goto: "plus_one_rewind"
+
+          - case:
+              - read:
+                  - { tape: "t", value: "1" }
+
+            then:
+              write:
+              move:
+                - { tape: "t", direction: "left" }
+              goto: "plus_one"
+
+    - instruction:
+        name: "plus_one_rewind"
+        switch:
+          - case:
+              - read:
+                  - { tape: "t", value: blank }
+
+            then:
+              write:
+              move:
+              goto: "plus_one_init"
+
+          - case:
+              - read:
+                  - { tape: "t", value: "1" }
+
+            then:
+              write:
+              move:
+                - { tape: "t", direction: "right" }
+              goto: "plus_one_rewind"
